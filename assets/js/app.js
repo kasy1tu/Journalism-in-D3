@@ -97,8 +97,8 @@ yText.append("text")
     .attr("class", "aText inactive y")
     .text("Lack Healthcare %")
 
-d3.csv("assets/data/data.csv", function(data){
-    visualize(data);
+d3.csv("assets/data/data.csv").then(function(data){
+    console.log(data)
 })
 
 
@@ -194,14 +194,17 @@ function visualize(theData){
 
     let theCircles = svg.selectAll("g theCircles").data(theData).enter()
 
-    theCircles.append("circle").attr("cx", function(d){
-        return xScale(d[curX])
-    }).attr("cy", function(d){
-        return yScale(d[curY])
-    }).attr("r", circleRadius)
-    .attr("class", function(d){
-        return "stateCircle" + d.abbr;
-    })
+    theCircles.append("circle")
+        .attr("cx", function(d){
+            return xScale(d[curX]);
+        })
+        .attr("cy", function(d){
+            return yScale(d[curY]);
+        })
+        .attr("r", circleRadius)
+        .attr("class", function(d){
+            return `stateCircle ${d.abbr}`
+        })
 
 
     
