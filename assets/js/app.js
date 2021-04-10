@@ -61,12 +61,12 @@ xText.append("text")
     .text("Household Income (Median)")
 
 
-let leftTextX = margin - topPadLeft;
+let leftTextX = margin + topPadLeft;
 let leftTextY = (height + labelArea) / 2 - labelArea;
 
 svg.append("g").attr("class", 'yText')
 
-let yText = d3.select(".yText")
+var yText = d3.select(".yText")
 
 function yTextRefresh(){
     yText.attr(
@@ -98,13 +98,13 @@ yText.append("text")
     .text("Lack Healthcare %")
 
 d3.csv("assets/data/data.csv").then(function(data){
-    console.log(data)
+    visualize(data);
 })
 
 
-function visualize(theData){
+function visualize(data){
     let curX = "poverty";
-    let curY = "obesity"
+    let curY = "obesity";
 
     
     var xMin;
@@ -130,19 +130,19 @@ function visualize(theData){
 
 
     function xMinMax(){
-        xMin = d3.min(theData, function(d){
+        xMin = d3.min(data, function(d){
             return parseFloat(d[curX]) * 0.90;
         })
-        xMax = d3.max(theData, function(d){
+        xMax = d3.max(data, function(d){
             return parseFloat(d[curX]) * 1.10;
         })
     }
 
     function yMinMax(){
-        yMin = d3.min(theData, function(d){
+        yMin = d3.min(data, function(d){
             return parseFloat(d[curY]) * 0.90;
         })
-        yMax = d3.max(theData, function(d){
+        yMax = d3.max(data, function(d){
             return parseFloat(d[curY]) * 1.10;
         })
     }
@@ -192,7 +192,7 @@ function visualize(theData){
     svg.append("g").call(yAxis).attr("class", "yAxis")
     .attr("transform", `translate(${margin + labelArea}, 0)`)
 
-    let theCircles = svg.selectAll("g theCircles").data(theData).enter()
+    var theCircles = svg.selectAll("g theCircles").data(data).enter()
 
     theCircles.append("circle")
         .attr("cx", function(d){
@@ -205,15 +205,26 @@ function visualize(theData){
         .attr("class", function(d){
             return `stateCircle ${d.abbr}`
         })
+        .on("mouseover", function(d){
+            toolTip.show(d,this);
+            d3.select(this).style("stroke", "#323232");
+        })
+        .on("mouseout", function(d){
+            toolTip.hide(d)
+            d3.select(this).style("stroke", "#e3e3e3");
+        })
 
-
-    
-    
-
-
-
-
-
+    theCircles
+    .append("text")
+    .text(function(d){
+        return d.abbr
+    }).attr("dx", function(d){
+        return xScale(d[curX])
+    })
+    .attr("dy", function(d){
+        return yScale(d[curY]) + circleRadius / 2.5
+    })
+    .attr("font-size", circleRadius)
 }
 
 
