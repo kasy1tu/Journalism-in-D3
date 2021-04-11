@@ -225,9 +225,13 @@ function visualize(data){
         return yScale(d[curY]) + circleRadius / 2.5
     })
     .attr("font-size", circleRadius)
+    .attr("class", "stateText")
+    .on("mouseover", function(d){
+        toolTip.show(d)
+        d3.select(`.${d.abbr}`).style("stroke", "#323232");
+    })
+    .on("mouseout", function(d){
+        toolTip.hide(d)
+        d3.select(`.${d.abbr}`).style("stroke", "#e3e3e3");
+    })
 }
-
-
-
-
-
